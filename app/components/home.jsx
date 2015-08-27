@@ -2,7 +2,7 @@ import React from 'react';
 import mui from 'material-ui';
 
 import FoundVideos from './foundVideos.jsx';
-import PlayLists from './playLists.jsx';
+import NulaCard from './nulaCard.jsx';
 
 import injectTapEventPlugin from "react-tap-event-plugin";
 
@@ -12,6 +12,13 @@ var Tabs = mui.Tabs;
 var Tab = mui.Tab;
 
 class Home extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      renderSearch: false
+    };
+  }
 
   static get childContextTypes() {
     return {
@@ -29,19 +36,24 @@ class Home extends React.Component {
     injectTapEventPlugin();
   };
 
+  _onChange() {
+    this.setState({
+      renderSearch: true
+    })
+  };
+
   render() {
-    return <Tabs>
-      <Tab label="Search" >
-        <FoundVideos />
-      </Tab>
-      <Tab label="Item Two" >
-        <div>
-          <h2>Tab Two Template Example</h2>
-          <p>This is another example of a tab template!</p>
-          <p>Fair warning - the next tab routes to home!</p>
-        </div>
-      </Tab>
-    </Tabs>;
+    var foundVideos = this.state.renderSearch ? <FoundVideos /> : null;
+    return (
+      <Tabs onChange={this._onChange.bind(this)}>
+        <Tab label="Player" >
+          <NulaCard />
+        </Tab>
+        <Tab label="Search" >
+          {foundVideos}
+        </Tab>
+      </Tabs>
+    );
   };
 
 };

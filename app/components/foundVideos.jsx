@@ -29,8 +29,14 @@ const loadMoreBtn = {
 };
 
 const songFieldStyle = {
-  marginTop: '18px'
+  marginTop: '10px',
+  marginLeft: '24px',
+  width: '356px'
 };
+
+const videoListStyle = {
+  marginBottom: '20px'
+}
 
 class FoundVideos extends React.Component {
 
@@ -116,20 +122,28 @@ class FoundVideos extends React.Component {
         this._searchYoutube();
       }
     }.bind(this), 500);
+  };
 
+  setPlaylist(playlistId) {
+    this.setState({
+      playlistId: playlistId
+    });
   };
 
   render() {
     return (
       <div>
         <div>
-          <PlayLists />
+          <PlayLists setPlaylist={this.setPlaylist.bind(this)} />
           <TextField onChange={this._handleTextFieldChange.bind(this)} value={this.state.song} style={songFieldStyle} />
         </div>
-        <VideoList
-          loading={this.state.loading}
-          song={this.state.song}
-          videos={this.state.videos} />
+        <div style={videoListStyle}>
+          <VideoList
+            loading={this.state.loading}
+            song={this.state.song}
+            videos={this.state.videos}
+            playlistId={this.state.playlistId} />
+        </div>
         <div className="center-block">
           {this.state.nextPageToken ? <RaisedButton style={loadMoreBtn} label="Load More" onClick={this.loadMore.bind(this)} /> : null}
         </div>

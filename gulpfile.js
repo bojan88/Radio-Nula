@@ -36,10 +36,13 @@ gulp.task('clean', function() {
 });
 
 gulp.task('copy', function() {
-  gulp.src(['./app/*.html', './app/manifest.json', './app/style.css'])
-    .pipe(gulp.dest('./dist/'));
-  return gulp.src(['./app/auth_js/**/*'])
-    .pipe(gulp.dest('./dist/auth_js/'));
+  gulp.src(['./app/background/**/*']).pipe(gulp.dest('./dist/background/'));
+
+  return gulp.src([
+    './app/*.html',
+    './app/manifest.json',
+    './app/style.css'
+  ]).pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('webserver', ['clean', 'copy', 'js', 'watch'], function() {
@@ -55,7 +58,7 @@ gulp.task('reload', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['./app/**/*.html', './app/**/*.json', './app/**/*.css'], ['copy']);
+  gulp.watch(['./app/**/*.html', './app/**/*.json', './app/**/*.css', './app/background/**/*'], ['copy']);
   gulp.watch('./dist/**/*', ['reload']);
 })
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import mui from 'material-ui';
 import YoutubeVideo from './youtubeVideo.jsx';
+import ScrollArea from 'react-scrollbar';
 
 var CircularProgress = mui.CircularProgress;
 
@@ -30,11 +31,18 @@ class VideoList extends React.Component {
     } else {
       if(this.props.videos && this.props.videos.length > 0) {
         videosHtml = (
-          <ul style={ulStyle} className="youtube-list">
-            {this.props.videos && this.props.videos.map(function(result, ind) {
-              return <YoutubeVideo key={result.id.videoId} data={result} ind={ind} />;
-            })}
-          </ul>
+          <ScrollArea
+            speed={0.8}
+            className="area"
+            contentClassName="content"
+            horizontal={false}
+            >
+              <ul style={ulStyle} className="youtube-list">
+                {this.props.videos && this.props.videos.map((result, ind) => {
+                  return <YoutubeVideo key={result.id.videoId} data={result} ind={ind} playlistId={this.props.playlistId} />;
+                })}
+              </ul>
+          </ScrollArea>
         );
       } else {
         videosHtml = <p>There are no results for <strong>{this.props.song}</strong></p>;
