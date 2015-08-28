@@ -1,5 +1,6 @@
 import React from 'react';
 import mui from 'material-ui';
+import ls from 'local-storage';
 
 import superagent from 'superagent';
 
@@ -14,7 +15,9 @@ class PlayLists extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectedListInd: ls('selectedListInd') || 0
+    };
   }
 
   componentWillMount() {
@@ -34,7 +37,8 @@ class PlayLists extends React.Component {
             this.setState({
               playlists: resObj.items
             });
-            this.props.setPlaylist(this.state.playlists[0].id);
+            var listInd = this.state.selectedListInd || 0;
+            this.props.setPlaylist(this.state.playlists[listInd].id);
           }.bind(this));
       }.bind(this));
     }.bind(this)()
@@ -42,7 +46,15 @@ class PlayLists extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.timeout);
-  }
+  };
+
+  _onDropdownChange(e, ind) {
+    this.props.setPlaylist(this.state.playlists[ind].id);
+    this.setState({
+      selectedListInd: ind
+    });
+    ls('selectedListInd', ind);
+  };
 
   render() {
     return (
@@ -54,7 +66,8 @@ class PlayLists extends React.Component {
               text: list.snippet.title
             }
           })}
-          onChange={(e, ind) => {this.props.setPlaylist(this.state.playlists[ind].id)}}
+          onChange={this._onDropdownChange.bind(this)}
+          selectedIndex={this.state.selectedListInd}
           style={playlistDropdownStyle} /> : null}
       </div>
     );

@@ -48,18 +48,12 @@ gulp.task('copy', function() {
 gulp.task('webserver', ['clean', 'copy', 'js', 'watch'], function() {
   connect.server({
     root: 'dist',
-    livereload: true
+    livereload: false
   });
-});
-
-gulp.task('reload', function() {
-  return gulp.src('./dist/**/*')
-    .pipe(connect.reload());
 });
 
 gulp.task('watch', function() {
   gulp.watch(['./app/**/*.html', './app/**/*.json', './app/**/*.css', './app/background/**/*'], ['copy']);
-  gulp.watch('./dist/**/*', ['reload']);
 })
 
 

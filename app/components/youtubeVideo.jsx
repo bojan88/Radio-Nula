@@ -25,6 +25,8 @@ const cardActionsStyle = {
   textAlign: 'center'
 };
 
+const snackbarHideDuration = 1800;
+
 
 class YoutubeVideo extends React.Component {
 
@@ -74,8 +76,8 @@ class YoutubeVideo extends React.Component {
             <CardTitle subtitle={this.props.data.snippet.title}/>
             <div style={cardActionsStyle}>
               <RaisedButton secondary={true} label="Add" onClick={this._addToPlaylist.bind(this)} />
-              <Snackbar message="Video added successfully." autoHideDuration="1800" ref="snackbarSuccess" />
-              <Snackbar message="There was an error. Please try again." autoHideDuration="1800" ref="snackbarError" />
+              <Snackbar message="Video added successfully." autoHideDuration={snackbarHideDuration} ref="snackbarSuccess" />
+              <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="snackbarError" />
             </div>
           </div>
         </CardActions>

@@ -46,10 +46,10 @@ class Home extends React.Component {
     var foundVideos = this.state.renderSearch ? <FoundVideos /> : null;
     return (
       <Tabs onChange={this._onChange.bind(this)}>
-        <Tab label="Player" >
+        <Tab label="Nula Player" >
           <NulaCard />
         </Tab>
-        <Tab label="Search" >
+        <Tab label="Youtube Search" >
           {foundVideos}
         </Tab>
       </Tabs>
