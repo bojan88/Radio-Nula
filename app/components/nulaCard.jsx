@@ -9,6 +9,7 @@ var CardTitle = mui.CardTitle;
 var CardActions = mui.CardActions;
 var FloatingActionButton = mui.FloatingActionButton;
 var FontIcon = mui.FontIcon;
+var CircularProgress = mui.CircularProgress;
 
 const cardStyle = {
   marginTop: '20px',
@@ -26,7 +27,8 @@ class NulaCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      playing: false
+      playing: false,
+      loading: false
     };
   };
 
@@ -59,6 +61,19 @@ class NulaCard extends React.Component {
     this.nulaHandler = setInterval(() => {
       this._updateNulaData();
     }.bind(this), 5000);
+
+    //background script will send the message when it starts playing
+    chrome.extension.onMessage.addListener(
+      function (request, sender, sendResponse) {
+        if (request.action === 'play_started') {
+          this.setState({
+            playing: true,
+            loading: false
+          });
+          console.log('started playing');
+        }
+      }.bind(this)
+    );
   };
 
   componentWillUnmount() {
@@ -66,12 +81,9 @@ class NulaCard extends React.Component {
   };
 
   _play() {
-    chrome.runtime.sendMessage({action: 'play'}, (response) => {
-      if(response.status === 'playing') {
-        this.setState({
-          playing: true
-        });
-      }
+    chrome.runtime.sendMessage({action: 'play'});
+    this.setState({
+      loading: true
     });
   };
 
@@ -87,19 +99,34 @@ class NulaCard extends React.Component {
 
 
   render() {
+    var btn;
+
+    if(this.state.playing) {
+      btn = (
+        <FloatingActionButton onClick={this._pause.bind(this)} label="Pause">
+          <FontIcon className="material-icons">pause</FontIcon>
+        </FloatingActionButton>
+      );
+    } else{
+      btn = (
+        <FloatingActionButton onClick={this._play.bind(this)} label="Play" secondary={true}>
+          <FontIcon className="material-icons">play_arrow</FontIcon>
+        </FloatingActionButton>
+      );
+    }
+
+    if(this.state.loading) {
+      btn = (
+        <CircularProgress mode="indeterminate" size={0.8} />
+      );
+    }
     return (
       <Card style={cardStyle}>
         <CardMedia overlay={<CardTitle title={this.state.song}/>}>
           <img src={this.state.image}/>
         </CardMedia>
         <div style={btnWrapperStyle}>
-          {this.state.playing
-            ? <FloatingActionButton onClick={this._pause.bind(this)} label="Pause">
-                <FontIcon className="material-icons">pause</FontIcon>
-              </FloatingActionButton>
-            : <FloatingActionButton onClick={this._play.bind(this)} label="Play" secondary={true}>
-                <FontIcon className="material-icons">play_arrow</FontIcon>
-              </FloatingActionButton>}
+          {btn}
         </div>
       </Card>
     );

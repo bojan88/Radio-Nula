@@ -7,6 +7,10 @@ source1.type = 'audio/mpeg';
 source1.src = 'http://streaming.radionula.com:8800/classics';
 audioElement.appendChild(source1);
 
+audioElement.addEventListener('playing', function() {
+  chrome.runtime.sendMessage({action: 'play_started'});
+});
+
 chrome.extension.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request.action === 'play') {
