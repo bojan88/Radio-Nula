@@ -10,7 +10,7 @@ audioElement.appendChild(source1);
 chrome.extension.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request.action === 'play') {
-      audioElement.load;
+      audioElement.load();
       audioElement.play();
       sendResponse({status: 'playing'});
     }
