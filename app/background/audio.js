@@ -77,6 +77,9 @@ chrome.extension.onMessage.addListener(
         audioElements[currentInd].load();
         audioElements[currentInd].play();
       }
+    } else if(request.action === 'play_started' && request.source === 'injected') {
+      currentInd = request.channelInd;
+      console.log('got the message, ind: ' + request.channelInd);
     }
   }
 );

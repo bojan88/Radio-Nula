@@ -87,10 +87,9 @@ class NulaCard extends React.Component {
           channelInd: response.channelInd
         });
         ls('channelInd', response.channelInd);
+        this._updateNulaData();
       }
     });
-
-    this._updateNulaData();
   };
 
   componentDidMount() {

@@ -24,5 +24,11 @@
       "background/audio.js"
     ]
   },
+  "content_scripts": [
+    {
+      "matches": ["http://*.radionula.com/*"],
+      "js": ["background/injected.js"]
+    }
+  ],
   "content_security_policy": "script-src 'self' https://apis.google.com https://www.youtube.com https://s.ytimg.com; object-src 'self'"
 }
