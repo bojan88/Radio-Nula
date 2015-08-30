@@ -29,6 +29,24 @@ const shiftBtnStyle = {
   marginRight: '20px'
 };
 
+const mediaWrapperStyle = {
+  height: '400px'
+};
+
+const mediaImgStyle = {
+  width: '100%',
+  height: '100%'
+};
+
+const imgLoadingStyle = {
+  marginTop: '175px',
+  marginBottom: '175px',
+  marginLeft: '50%',
+  position: 'relative',
+  left: '-25px',
+  top: '-25px'
+};
+
 const snackbarHideDuration = 1800;
 
 class NulaCard extends React.Component {
@@ -65,8 +83,10 @@ class NulaCard extends React.Component {
       if(response.status === 'status') {
         this.setState({
           playing: response.playing,
-          loading: response.loading
+          loading: response.loading,
+          channelInd: response.channelInd
         });
+        ls('channelInd', response.channelInd);
       }
     });
 
@@ -75,7 +95,10 @@ class NulaCard extends React.Component {
 
   componentDidMount() {
     this.nulaHandler = setInterval(() => {
-      this._updateNulaData();
+      //disable if the channel is changing
+      if(!this.state.loading) {
+        this._updateNulaData();
+      }
     }.bind(this), 5000);
 
     //background script will send the message when it starts playing
@@ -83,7 +106,13 @@ class NulaCard extends React.Component {
       function (request, sender, sendResponse) {
         if (request.action === 'play_started') {
           if(request.channelInd !== this.state.channelInd) {
-            this._updateNulaData();
+            this.setState({
+              image: null,
+              song: null
+            });
+            setTimeout(() => {
+              this._updateNulaData();
+            }.bind(this), 0);
           }
           this.setState({
             playing: true,
@@ -130,9 +159,15 @@ class NulaCard extends React.Component {
         channelInd: newChannelInd
       });
       ls('channelInd', newChannelInd);
-      this._updateNulaData();
+      this.setState({
+        image: null,
+        song: null
+      });
+      setTimeout(() => {
+        this._updateNulaData();
+      }.bind(this), 0);
     }
-    chrome.runtime.sendMessage({action: 'shift'}, (response) => {});
+    chrome.runtime.sendMessage({action: 'shift'});
   }
 
   render() {
@@ -170,7 +205,9 @@ class NulaCard extends React.Component {
     return (
       <Card style={cardStyle}>
         <CardMedia overlay={<CardTitle title={this.state.song}/>}>
-          <img src={this.state.image}/>
+          <div style={mediaWrapperStyle}>
+            {this.state.image ? <img src={this.state.image} style={mediaImgStyle}/> : <CircularProgress style={imgLoadingStyle} mode="indeterminate" size={0.8} />}
+          </div>
         </CardMedia>
         <div style={btnWrapperStyle}>
           {btn}

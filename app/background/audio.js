@@ -69,7 +69,7 @@ chrome.extension.onMessage.addListener(
       audioElements[currentInd].pause();
       sendResponse({status: 'paused'});
     } else if(request.action === 'status') {
-      sendResponse({status: 'status', playing: playing, loading: loading});
+      sendResponse({status: 'status', playing: playing, loading: loading, channelInd: currentInd});
     } else if(request.action === 'shift') {
       currentInd = (currentInd + 1) % audioElements.length;
       if(playing) {
