@@ -7,12 +7,21 @@ var gulp = require('gulp'),
     buffer = require('vinyl-buffer'),
     sourcemaps = require('gulp-sourcemaps'),
     connect = require('gulp-connect'),
-    del = require('del');
+    del = require('del'),
+    uglify = require('gulp-uglify'),
+    replace = require('gulp-replace'),
+    fs = require('fs');
 
 console.log(watchify.args);
 watchify.args.debug = true;
 
 var b = watchify(browserify('./app/main.jsx', watchify.args));
+
+var production = false;
+
+gulp.task('setProduction', function() {
+  production = true;
+});
 
 b.transform(babelify)
 
@@ -31,21 +40,34 @@ b.on('log', gutil.log);
 
 gulp.task('js', bundle);
 
-gulp.task('clean', function() {
-  return del(['./dist']);
+gulp.task('clean:js', function(cb) {
+  return del(['./dist/js/**/*'], cb);
 });
 
-gulp.task('copy', function() {
+gulp.task('clean:static', function(cb) {
+  return del([
+    './dist/background/**/*',
+    './dist/*.html',
+    './dist/manifest.json',
+    './dist/style.css'
+  ], cb);
+});
+
+gulp.task('copy', ['clean:static'], function() {
   gulp.src(['./app/background/**/*']).pipe(gulp.dest('./dist/background/'));
+
+  var data = JSON.parse(fs.readFileSync('./app/sensitiveData.json', 'utf8'));
 
   return gulp.src([
     './app/*.html',
     './app/manifest.json',
     './app/style.css'
-  ]).pipe(gulp.dest('./dist/'));
+  ])
+    .pipe(replace('{{oauthClientId}}', production ? data.oauth.prodClientId : data.oauth.devClientId))
+    .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('webserver', ['clean', 'copy', 'js', 'watch'], function() {
+gulp.task('webserver', ['clean:js', 'copy', 'js', 'watch'], function() {
   connect.server({
     root: 'dist',
     livereload: false
@@ -54,7 +76,18 @@ gulp.task('webserver', ['clean', 'copy', 'js', 'watch'], function() {
 
 gulp.task('watch', function() {
   gulp.watch(['./app/**/*.html', './app/**/*.json', './app/**/*.css', './app/background/**/*'], ['copy']);
-})
+});
+
+
+gulp.task('prod', ['clean:js', 'setProduction' , 'copy'], function() {
+  return browserify('./app/main.jsx')
+    .transform(babelify)
+    .bundle()
+    .pipe(source('bundle.js'))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(gulp.dest('./dist/js'));
+});
 
 
 gulp.task('default', ['webserver']);

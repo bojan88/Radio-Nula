@@ -1,0 +1,6 @@
+{
+  "oauth": {
+    "devClientId": "devClientId",
+    "prodClientId": "prodClientId"
+  }
+}
