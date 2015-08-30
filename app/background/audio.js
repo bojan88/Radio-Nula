@@ -1,29 +1,79 @@
-var audioElement = document.createElement('audio');
-audioElement.setAttribute("preload", "auto");
-audioElement.preload = true;
+var audioElements = [];
+var playing = false;
+var loading = false;
+
+var audioEl1 = document.createElement('audio');
+audioEl1.setAttribute("preload", "auto");
+audioElements.push(audioEl1);
+
+var audioEl2 = document.createElement('audio');
+audioEl2.setAttribute("preload", "auto");
+audioElements.push(audioEl2);
+
+var audioEl3 = document.createElement('audio');
+audioEl3.setAttribute("preload", "auto");
+audioElements.push(audioEl3);
 
 var source1 = document.createElement('source');
 source1.type = 'audio/mpeg';
 source1.src = 'http://streaming.radionula.com:8800/classics';
-audioElement.appendChild(source1);
+audioEl1.appendChild(source1);
 
-audioElement.addEventListener('playing', function() {
-  chrome.runtime.sendMessage({action: 'play_started'});
+var source2 = document.createElement('source');
+source2.type = 'audio/mpeg';
+source2.src = 'http://streaming.radionula.com:8800/channel2';
+audioEl2.appendChild(source2);
+
+var source3 = document.createElement('source');
+source3.type = 'audio/mpeg';
+source3.src = 'http://streaming.radionula.com:8800/channel3';
+audioEl3.appendChild(source3);
+
+var currentInd = 0;
+
+audioElements.forEach(function(el, ind) {
+
+  el.addEventListener('playing', function() {
+    chrome.runtime.sendMessage({action: 'play_started', channelInd: ind});
+    playing = true;
+    loading = false;
+    pauseOthers();
+  });
+
+  el.addEventListener('error', function() {
+    chrome.runtime.sendMessage({action: 'error'});
+    playing = false;
+    loading = false;
+    console.log('error')
+  });
+
 });
+
+function pauseOthers() {
+  audioElements.forEach(function(el, ind) {
+    if(ind !== currentInd) {
+      el.pause();
+    }
+  })
+}
+
 
 chrome.extension.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request.action === 'play') {
-      audioElement.load();
-      audioElement.play();
-      sendResponse({status: 'playing'});
-    }
-    if (request.action === 'pause') {
-      audioElement.pause();
+      loading = true;
+      audioElements[currentInd].load();
+      audioElements[currentInd].play();
+    } else if (request.action === 'pause') {
+      audioElements[currentInd].pause();
       sendResponse({status: 'paused'});
-    }
-    if(request.action === 'status') {
-      sendResponse({status: 'status', value: audioElement.paused});
+    } else if(request.action === 'status') {
+      sendResponse({status: 'status', playing: playing, loading: loading});
+    } else if(request.action === 'shift') {
+      loading = true;
+      currentInd = (currentInd + 1) % audioElements.length;
+      audioElements[currentInd].load();
+      audioElements[currentInd].play();
     }
   }
 );

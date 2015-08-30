@@ -2,6 +2,7 @@ import React from 'react';
 import mui from 'material-ui';
 import superagent from 'superagent';
 import {parseString} from 'xml2js';
+import ls from 'local-storage';
 
 var Card = mui.Card;
 var CardMedia = mui.CardMedia;
@@ -10,6 +11,7 @@ var CardActions = mui.CardActions;
 var FloatingActionButton = mui.FloatingActionButton;
 var FontIcon = mui.FontIcon;
 var CircularProgress = mui.CircularProgress;
+var Snackbar = mui.Snackbar;
 
 const cardStyle = {
   marginTop: '20px',
@@ -22,18 +24,36 @@ const btnWrapperStyle = {
   paddingBottom: '20px'
 };
 
+const shiftBtnStyle = {
+  marginRight: '20px'
+};
+
+const snackbarHideDuration = 1800;
+
+const rssUrls = [
+  'http://www.radionula.com/rss.xml',
+  'http://www.radionula.com/rss_ch2.xml',
+  'http://www.radionula.com/rss_ch3.xml'
+]
+
 class NulaCard extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       playing: false,
-      loading: false
+      loading: false,
+      channelInd: ls('channelInd') || 0
     };
   };
 
   _updateNulaData() {
-    superagent.get('http://www.radionula.com/rss.xml').end((err, res) => {
+    superagent.get(rssUrls[this.state.channelInd]).end((err, res) => {
+      if(err) {
+        this.refs.errSnackbar.show();
+        clearInterval(this.nulaHandler);
+        return;
+      }
       parseString(res.text, (err, res) => {
         var song = res.rss.channel[0].item[0].title[0];
         var image = res.rss.channel[0].item[0].image[0].url[0];
@@ -49,7 +69,8 @@ class NulaCard extends React.Component {
     chrome.runtime.sendMessage({action: 'status'}, (response) => {
       if(response.status === 'status') {
         this.setState({
-          playing: !response.value
+          playing: response.playing,
+          loading: response.loading
         });
       }
     });
@@ -66,11 +87,17 @@ class NulaCard extends React.Component {
     chrome.extension.onMessage.addListener(
       function (request, sender, sendResponse) {
         if (request.action === 'play_started') {
+          if(request.channelInd !== this.state.channelInd) {
+            this._updateNulaData();
+          }
           this.setState({
             playing: true,
-            loading: false
+            loading: false,
+            channelInd: request.channelInd
           });
-          console.log('started playing');
+          ls('channelInd', this.state.channelInd);
+        } else if(request.action === 'error') {
+          this.refs.errSnackbar.show();
         }
       }.bind(this)
     );
@@ -95,17 +122,28 @@ class NulaCard extends React.Component {
         });
       }
     });
-  }
+  };
 
+  _shift() {
+    this.setState({
+      loading: true
+    });
+    chrome.runtime.sendMessage({action: 'shift'}, (response) => {});
+  }
 
   render() {
     var btn;
 
     if(this.state.playing) {
       btn = (
-        <FloatingActionButton onClick={this._pause.bind(this)} label="Pause">
-          <FontIcon className="material-icons">pause</FontIcon>
-        </FloatingActionButton>
+        <div>
+          <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true}>
+            <FontIcon className="material-icons">skip_next</FontIcon>
+          </FloatingActionButton>
+          <FloatingActionButton onClick={this._pause.bind(this)} label="Pause">
+            <FontIcon className="material-icons">pause</FontIcon>
+          </FloatingActionButton>
+        </div>
       );
     } else{
       btn = (
@@ -128,6 +166,7 @@ class NulaCard extends React.Component {
         <div style={btnWrapperStyle}>
           {btn}
         </div>
+        <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="errSnackbar" />
       </Card>
     );
   };
