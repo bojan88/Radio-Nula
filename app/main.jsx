@@ -1,5 +1,6 @@
 import React from 'react';
 import Home from './components/home.jsx';
+import ls from 'local-storage';
 
 //add eurl to the youtube get_video_info request
 //some videos won't play if there's no eurl because of the copyright content
@@ -16,7 +17,7 @@ chrome.webRequest.onBeforeRequest.addListener((data) => {
 },['blocking']);
 
 chrome.identity.getAuthToken({ 'interactive': true }, function(token) {
-  chrome.storage.local.set({token: token});
+  ls('oauthToken', token);
 });
 
 React.render(

@@ -24,23 +24,22 @@ class PlayLists extends React.Component {
     var queryURL = 'https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true';
 
     var getLists = function getLists() {
-      chrome.storage.local.get('token', (storageObj) => {
-        superagent.get(queryURL)
-          .set('Authorization', 'Bearer ' + storageObj.token)
-          .end((err, res) => {
-            if(err) {
-              this.timeout = setTimeout(() => {
-                getLists.bind(this)();
-              }.bind(this), 500);
-            }
-            var resObj = JSON.parse(res.text);
-            this.setState({
-              playlists: resObj.items
-            });
-            var listInd = this.state.selectedListInd || 0;
-            this.props.setPlaylist(this.state.playlists[listInd].id);
-          }.bind(this));
-      }.bind(this));
+      var token = ls('oauthToken');
+      superagent.get(queryURL)
+        .set('Authorization', 'Bearer ' + token)
+        .end((err, res) => {
+          if(err) {
+            this.timeout = setTimeout(() => {
+              getLists.bind(this)();
+            }.bind(this), 500);
+          }
+          var resObj = JSON.parse(res.text);
+          this.setState({
+            playlists: resObj.items
+          });
+          var listInd = this.state.selectedListInd || 0;
+          this.props.setPlaylist(this.state.playlists[listInd].id);
+        }.bind(this));
     }.bind(this)()
   };
 

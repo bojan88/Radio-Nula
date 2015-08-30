@@ -1,6 +1,7 @@
 import React from 'react';
 import mui from 'material-ui';
 import superagent from 'superagent';
+import ls from 'local-storage';
 
 var Card = mui.Card;
 var CardMedia = mui.CardMedia;
@@ -36,24 +37,22 @@ class YoutubeVideo extends React.Component {
 
   _addToPlaylist() {
     var playlistId = this.props.playlistId;
-
-    chrome.storage.local.get('token', (storageObj) => {
-      superagent.post('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet')
-        .set('Authorization', 'Bearer ' + storageObj.token)
-        .send({
-          snippet: {
-            playlistId: playlistId,
-            resourceId: this.props.data.id
-          }
-        })
-        .end((err, res) => {
-          if(err) {
-            this.refs.snackbarError.show();
-          } else {
-            this.refs.snackbarSuccess.show();
-          }
-        }.bind(this));
-    }.bind(this));
+    var token = ls('oauthToken');
+    superagent.post('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet')
+      .set('Authorization', 'Bearer ' + token)
+      .send({
+        snippet: {
+          playlistId: playlistId,
+          resourceId: this.props.data.id
+        }
+      })
+      .end((err, res) => {
+        if(err) {
+          this.refs.snackbarError.show();
+        } else {
+          this.refs.snackbarSuccess.show();
+        }
+      }.bind(this));
   };
 
   render() {

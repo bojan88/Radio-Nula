@@ -1,19 +1,17 @@
 {
-  "name": "Example",
-  "version": "0.1.0",
+  "name": "Radio Nula",
+  "version": "0.1.2",
   "manifest_version" : 2,
-  "description": "Nula",
+  "description": "Listen to www.radionula.com and find songs currently playing on Youtube in one click",
   "browser_action" : {
     "default_popup": "index.html"
   },
   "permissions": [
-    "storage",
     "identity",
     "*://www.youtube.com/*",
     "webRequest",
     "webRequestBlocking",
-    "http://www.radionula.com/",
-    "https://accounts.google.com/o/oauth2/token"
+    "http://www.radionula.com/"
   ],
   "oauth2": {
     "client_id": "{{oauthClientId}}",
