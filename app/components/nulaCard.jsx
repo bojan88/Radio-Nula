@@ -3,6 +3,7 @@ import mui from 'material-ui';
 import superagent from 'superagent';
 import {parseString} from 'xml2js';
 import ls from 'local-storage';
+import rssUrls from '../constants/rssUrls';
 
 var Card = mui.Card;
 var CardMedia = mui.CardMedia;
@@ -29,12 +30,6 @@ const shiftBtnStyle = {
 };
 
 const snackbarHideDuration = 1800;
-
-const rssUrls = [
-  'http://www.radionula.com/rss.xml',
-  'http://www.radionula.com/rss_ch2.xml',
-  'http://www.radionula.com/rss_ch3.xml'
-]
 
 class NulaCard extends React.Component {
 
@@ -125,9 +120,18 @@ class NulaCard extends React.Component {
   };
 
   _shift() {
-    this.setState({
-      loading: true
-    });
+    if(this.state.playing) {
+      this.setState({
+        loading: true
+      });
+    } else {
+      var newChannelInd = (this.state.channelInd + 1) % 3;
+      this.setState({
+        channelInd: newChannelInd
+      });
+      ls('channelInd', newChannelInd);
+      this._updateNulaData();
+    }
     chrome.runtime.sendMessage({action: 'shift'}, (response) => {});
   }
 
@@ -147,9 +151,14 @@ class NulaCard extends React.Component {
       );
     } else{
       btn = (
-        <FloatingActionButton onClick={this._play.bind(this)} label="Play" secondary={true}>
-          <FontIcon className="material-icons">play_arrow</FontIcon>
-        </FloatingActionButton>
+        <div>
+          <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true}>
+            <FontIcon className="material-icons">skip_next</FontIcon>
+          </FloatingActionButton>
+          <FloatingActionButton onClick={this._play.bind(this)} label="Play" secondary={true}>
+            <FontIcon className="material-icons">play_arrow</FontIcon>
+          </FloatingActionButton>
+        </div>
       );
     }
 

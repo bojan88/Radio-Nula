@@ -4,6 +4,8 @@ import superagent from 'superagent';
 import {parseString} from 'xml2js';
 import VideoList from './videoList.jsx';
 import PlayLists from './playLists.jsx';
+import rssUrls from '../constants/rssUrls';
+import ls from 'local-storage';
 
 var youtubeKey = 'AIzaSyAgTbw2_LpZ6IguIzyRjuP21-Dr-DsOzOQ';
 var songCount = 3;
@@ -43,12 +45,13 @@ class FoundVideos extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
+      channelId: ls('channelInd') || 0
     };
   }
 
   componentDidMount() {
-    superagent.get('http://www.radionula.com/rss.xml').end((err, res) => {
+    superagent.get(rssUrls[this.state.channelId]).end((err, res) => {
       parseString(res.text, (err, res) => {
         var song = res.rss.channel[0].item[0].title[0];
         this.setState({

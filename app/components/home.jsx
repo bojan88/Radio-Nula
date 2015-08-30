@@ -36,16 +36,22 @@ class Home extends React.Component {
     injectTapEventPlugin();
   };
 
-  _onChange() {
-    this.setState({
-      renderSearch: true
-    })
+  _onTabChange(value) {
+    if(value === 1) {
+      this.setState({
+        renderSearch: true
+      });
+    } else {
+      this.setState({
+        renderSearch: false
+      });
+    }
   };
 
   render() {
     var foundVideos = this.state.renderSearch ? <FoundVideos /> : null;
     return (
-      <Tabs onChange={this._onChange.bind(this)}>
+      <Tabs onChange={this._onTabChange.bind(this)}>
         <Tab label="Nula Player" >
           <NulaCard />
         </Tab>

@@ -65,15 +65,18 @@ chrome.extension.onMessage.addListener(
       audioElements[currentInd].load();
       audioElements[currentInd].play();
     } else if (request.action === 'pause') {
+      playing = false;
       audioElements[currentInd].pause();
       sendResponse({status: 'paused'});
     } else if(request.action === 'status') {
       sendResponse({status: 'status', playing: playing, loading: loading});
     } else if(request.action === 'shift') {
-      loading = true;
       currentInd = (currentInd + 1) % audioElements.length;
-      audioElements[currentInd].load();
-      audioElements[currentInd].play();
+      if(playing) {
+        loading = true;
+        audioElements[currentInd].load();
+        audioElements[currentInd].play();
+      }
     }
   }
 );

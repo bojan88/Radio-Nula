@@ -12,7 +12,6 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     fs = require('fs');
 
-console.log(watchify.args);
 watchify.args.debug = true;
 
 var b = watchify(browserify('./app/main.jsx', watchify.args));
