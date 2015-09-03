@@ -35,7 +35,8 @@ const mediaWrapperStyle = {
 
 const mediaImgStyle = {
   width: '100%',
-  height: '100%'
+  height: '100%',
+  borderRadius: '100%'
 };
 
 const imgLoadingStyle = {
@@ -45,6 +46,15 @@ const imgLoadingStyle = {
   position: 'relative',
   left: '-25px',
   top: '-25px'
+};
+
+const shiftImgStyle = {
+  width: '34px',
+  height: '34px',
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  margin: '-17px 0 0 -17px'
 };
 
 const snackbarHideDuration = 1800;
@@ -176,7 +186,9 @@ class NulaCard extends React.Component {
       btn = (
         <div>
           <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true}>
-            <FontIcon className="material-icons">skip_next</FontIcon>
+            <div>
+              <img src="images/shift.png" style={shiftImgStyle} />
+            </div>
           </FloatingActionButton>
           <FloatingActionButton onClick={this._pause.bind(this)} label="Pause">
             <FontIcon className="material-icons">pause</FontIcon>
@@ -187,7 +199,9 @@ class NulaCard extends React.Component {
       btn = (
         <div>
           <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true}>
-            <FontIcon className="material-icons">skip_next</FontIcon>
+            <div>
+              <img src="images/ico_shift2x.png" style={shiftImgStyle} />
+            </div>
           </FloatingActionButton>
           <FloatingActionButton onClick={this._play.bind(this)} label="Play" secondary={true}>
             <FontIcon className="material-icons">play_arrow</FontIcon>
@@ -201,11 +215,14 @@ class NulaCard extends React.Component {
         <CircularProgress mode="indeterminate" size={0.8} />
       );
     }
+
+    var vinylClass = this.state.playing ? 'rotating' : null;
+
     return (
       <Card style={cardStyle}>
         <CardMedia overlay={<CardTitle title={this.state.song}/>}>
           <div style={mediaWrapperStyle}>
-            {this.state.image ? <img src={this.state.image} style={mediaImgStyle}/> : <CircularProgress style={imgLoadingStyle} mode="indeterminate" size={0.8} />}
+            {this.state.image ? <img src={this.state.image} style={mediaImgStyle} className={vinylClass} /> : <CircularProgress style={imgLoadingStyle} mode="indeterminate" size={0.8} />}
           </div>
         </CardMedia>
         <div style={btnWrapperStyle}>

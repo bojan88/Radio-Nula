@@ -48,12 +48,14 @@ gulp.task('clean:static', function(cb) {
     './dist/background/**/*',
     './dist/*.html',
     './dist/manifest.json',
-    './dist/style.css'
+    './dist/style.css',
+    './dist/images/**/*'
   ], cb);
 });
 
 gulp.task('copy', ['clean:static'], function() {
   gulp.src(['./app/background/**/*']).pipe(gulp.dest('./dist/background/'));
+  gulp.src(['./app/images/**/*']).pipe(gulp.dest('./dist/images/'));
 
   var data = JSON.parse(fs.readFileSync('./app/sensitiveData.json', 'utf8'));
 

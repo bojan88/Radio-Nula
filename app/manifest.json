@@ -4,7 +4,11 @@
   "manifest_version" : 2,
   "description": "Listen to www.radionula.com and find songs currently playing on Youtube in one click",
   "browser_action" : {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": {
+      "19": "images/nula_ico.png"
+    },
+    "default_title": "Radio Nula"
   },
   "permissions": [
     "identity",
@@ -30,5 +34,8 @@
       "js": ["background/injected.js"]
     }
   ],
+  "icons": {
+    "16": "images/nula_ico.png"
+  },
   "content_security_policy": "script-src 'self' https://apis.google.com https://www.youtube.com https://s.ytimg.com; object-src 'self'"
 }

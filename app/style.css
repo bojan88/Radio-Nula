@@ -4,12 +4,21 @@
   margin-right: auto;
 }
 
-.youtube-list .even {
-  margin-right: 20px;
-}
-
 .area {
   height: 300px;
+}
+
+@-webkit-keyframes rotating {
+  from{
+    -webkit-transform: rotate(0deg);
+  }
+  to{
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  -webkit-animation: rotating 2s linear infinite;
 }
 
 
