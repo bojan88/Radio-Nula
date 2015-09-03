@@ -151,7 +151,8 @@ class NulaCard extends React.Component {
     chrome.runtime.sendMessage({action: 'pause'}, (response) => {
       if(response.status === 'paused') {
         this.setState({
-          playing: false
+          playing: false,
+          loading: false
         });
       }
     });
@@ -180,41 +181,29 @@ class NulaCard extends React.Component {
   }
 
   render() {
-    var btn;
+    var playPauseButton;
+
+    var shiftImgClass = this.state.loading ? 'rotating': null;
 
     var shiftBtn = (
-      <div>
-        <img src="images/ico_shift2x.png" style={shiftImgStyle} />
-      </div>
+      <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true} disabled={this.state.loading}>
+        <div>
+          <img src="images/ico_shift2x.png" style={shiftImgStyle} className={shiftImgClass} />
+        </div>
+      </FloatingActionButton>
     );
 
-    if(this.state.playing) {
-      btn = (
-        <div>
-          <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true}>
-            {shiftBtn}
-          </FloatingActionButton>
-          <FloatingActionButton onClick={this._pause.bind(this)} label="Pause">
-            <FontIcon className="material-icons">pause</FontIcon>
-          </FloatingActionButton>
-        </div>
+    if(this.state.playing || this.state.loading) {
+      playPauseButton = (
+        <FloatingActionButton onClick={this._pause.bind(this)} label="Pause">
+          <FontIcon className="material-icons">pause</FontIcon>
+        </FloatingActionButton>
       );
     } else{
-      btn = (
-        <div>
-          <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true}>
-            {shiftBtn}
-          </FloatingActionButton>
-          <FloatingActionButton onClick={this._play.bind(this)} label="Play" secondary={true}>
-            <FontIcon className="material-icons">play_arrow</FontIcon>
-          </FloatingActionButton>
-        </div>
-      );
-    }
-
-    if(this.state.loading) {
-      btn = (
-        <CircularProgress mode="indeterminate" size={0.8} />
+      playPauseButton = (
+        <FloatingActionButton onClick={this._play.bind(this)} label="Play" secondary={true}>
+          <FontIcon className="material-icons">play_arrow</FontIcon>
+        </FloatingActionButton>
       );
     }
 
@@ -228,7 +217,10 @@ class NulaCard extends React.Component {
           </div>
         </CardMedia>
         <div style={btnWrapperStyle}>
-          {btn}
+          <div>
+            {shiftBtn}
+            {playPauseButton}
+          </div>
         </div>
         <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="errSnackbar" />
       </Card>

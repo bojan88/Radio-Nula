@@ -1,6 +1,6 @@
 {
   "name": "Radio Nula",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "manifest_version" : 2,
   "description": "Listen to www.radionula.com and find songs currently playing on Youtube in one click",
   "browser_action" : {

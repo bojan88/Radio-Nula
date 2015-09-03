@@ -47,6 +47,11 @@ audioElements.forEach(function(el, ind) {
     console.log('error')
   });
 
+  el.addEventListener('abort', function() {
+    playing = false;
+    loading = false;
+  });
+
 });
 
 function pauseOthers() {
