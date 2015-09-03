@@ -59,9 +59,14 @@ function pauseOthers() {
     if(ind !== currentInd) {
       el.pause();
     }
-  })
+  });
 }
 
+function pauseAll() {
+  audioElements.forEach(function(el, ind) {
+    el.pause();
+  });
+}
 
 chrome.extension.onMessage.addListener(
   function (request, sender, sendResponse) {
@@ -71,7 +76,7 @@ chrome.extension.onMessage.addListener(
       audioElements[currentInd].play();
     } else if (request.action === 'pause') {
       playing = false;
-      audioElements[currentInd].pause();
+      pauseAll();
       sendResponse({status: 'paused'});
     } else if(request.action === 'status') {
       sendResponse({status: 'status', playing: playing, loading: loading, channelInd: currentInd});
