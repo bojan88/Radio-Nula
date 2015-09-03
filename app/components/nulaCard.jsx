@@ -182,13 +182,17 @@ class NulaCard extends React.Component {
   render() {
     var btn;
 
+    var shiftBtn = (
+      <div>
+        <img src="images/ico_shift2x.png" style={shiftImgStyle} />
+      </div>
+    );
+
     if(this.state.playing) {
       btn = (
         <div>
           <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true}>
-            <div>
-              <img src="images/shift.png" style={shiftImgStyle} />
-            </div>
+            {shiftBtn}
           </FloatingActionButton>
           <FloatingActionButton onClick={this._pause.bind(this)} label="Pause">
             <FontIcon className="material-icons">pause</FontIcon>
@@ -199,9 +203,7 @@ class NulaCard extends React.Component {
       btn = (
         <div>
           <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true}>
-            <div>
-              <img src="images/ico_shift2x.png" style={shiftImgStyle} />
-            </div>
+            {shiftBtn}
           </FloatingActionButton>
           <FloatingActionButton onClick={this._play.bind(this)} label="Play" secondary={true}>
             <FontIcon className="material-icons">play_arrow</FontIcon>
