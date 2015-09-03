@@ -211,7 +211,7 @@ class NulaCard extends React.Component {
 
     return (
       <Card style={cardStyle}>
-        <CardMedia overlay={<CardTitle title={this.state.song}/>}>
+        <CardMedia overlay={<CardTitle title={this.state.song} subtitle={"Channel " + (this.state.channelInd + 1)} />}>
           <div style={mediaWrapperStyle}>
             {this.state.image ? <img src={this.state.image} style={mediaImgStyle} className={vinylClass} /> : <CircularProgress style={imgLoadingStyle} mode="indeterminate" size={0.8} />}
           </div>
