@@ -15,3 +15,4 @@ TODO:
 
 * Add screenshots
 * Better es6 code
+* Fixed max length for YouTube playlists dropdown
