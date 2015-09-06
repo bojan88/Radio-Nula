@@ -30,12 +30,14 @@ const shiftBtnStyle = {
 };
 
 const mediaWrapperStyle = {
-  height: '400px'
+  height: '400px',
+  backgroundColor: '#28282A'
 };
 
 const mediaImgStyle = {
-  width: '100%',
-  height: '100%',
+  width: '80%',
+  height: '80%',
+  margin: '10% 0 0 10%',
   borderRadius: '100%'
 };
 
@@ -112,7 +114,7 @@ class NulaCard extends React.Component {
 
     //background script will send the message when it starts playing
     chrome.extension.onMessage.addListener(
-      function (request, sender, sendResponse) {
+      (request, sender, sendResponse) => {
         if (request.action === 'play_started') {
           if(request.channelInd !== this.state.channelInd) {
             this.setState({

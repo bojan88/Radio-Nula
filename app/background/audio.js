@@ -49,7 +49,6 @@ audioElements.forEach(function(el, ind) {
 
   el.addEventListener('abort', function() {
     playing = false;
-    loading = false;
   });
 
 });

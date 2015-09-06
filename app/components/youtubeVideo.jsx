@@ -74,7 +74,7 @@ class YoutubeVideo extends React.Component {
           <div>
             <CardTitle subtitle={this.props.data.snippet.title}/>
             <div style={cardActionsStyle}>
-              <RaisedButton secondary={true} label="Add" onClick={this._addToPlaylist.bind(this)} />
+              <RaisedButton secondary={true} label="Add to playlist" onClick={this._addToPlaylist.bind(this)} />
               <Snackbar message="Video added successfully." autoHideDuration={snackbarHideDuration} ref="snackbarSuccess" />
               <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="snackbarError" />
             </div>

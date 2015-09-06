@@ -6,7 +6,6 @@ var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     buffer = require('vinyl-buffer'),
     sourcemaps = require('gulp-sourcemaps'),
-    connect = require('gulp-connect'),
     del = require('del'),
     uglify = require('gulp-uglify'),
     replace = require('gulp-replace'),
@@ -55,7 +54,7 @@ gulp.task('clean:static', function(cb) {
 
 gulp.task('copy', ['clean:static'], function() {
   gulp.src(['./app/background/**/*']).pipe(gulp.dest('./dist/background/'));
-  gulp.src(['./app/images/**/*']).pipe(gulp.dest('./dist/images/'));
+  gulp.src(['./app/images/app/**/*']).pipe(gulp.dest('./dist/images/'));
 
   var data = JSON.parse(fs.readFileSync('./app/sensitiveData.json', 'utf8'));
 
@@ -66,13 +65,6 @@ gulp.task('copy', ['clean:static'], function() {
   ])
     .pipe(replace('{{oauthClientId}}', production ? data.oauth.prodClientId : data.oauth.devClientId))
     .pipe(gulp.dest('./dist/'));
-});
-
-gulp.task('webserver', ['clean:js', 'copy', 'js', 'watch'], function() {
-  connect.server({
-    root: 'dist',
-    livereload: false
-  });
 });
 
 gulp.task('watch', function() {
@@ -91,4 +83,4 @@ gulp.task('prod', ['clean:js', 'setProduction' , 'copy'], function() {
 });
 
 
-gulp.task('default', ['webserver']);
+gulp.task('default', ['clean:js', 'copy', 'js', 'watch']);

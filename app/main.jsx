@@ -16,7 +16,7 @@ chrome.webRequest.onBeforeRequest.addListener((data) => {
   types: ["xmlhttprequest"]
 },['blocking']);
 
-chrome.identity.getAuthToken({ 'interactive': true }, function(token) {
+chrome.identity.getAuthToken({ 'interactive': true }, (token) => {
   ls('oauthToken', token);
 });
 
