@@ -23,6 +23,8 @@ class PlayLists extends React.Component {
   componentWillMount() {
     var queryURL = 'https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true';
 
+    //TODO: replace this with self invoked es6 function
+    //return arguments.callee ?
     var getLists = function getLists() {
       var token = ls('oauthToken');
       superagent.get(queryURL)
