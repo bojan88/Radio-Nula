@@ -4,14 +4,17 @@ var loading = false;
 
 var audioEl1 = document.createElement('audio');
 audioEl1.setAttribute("preload", "auto");
+audioEl1.volume = 0.8;
 audioElements.push(audioEl1);
 
 var audioEl2 = document.createElement('audio');
 audioEl2.setAttribute("preload", "auto");
+audioEl2.volume = 0.8;
 audioElements.push(audioEl2);
 
 var audioEl3 = document.createElement('audio');
 audioEl3.setAttribute("preload", "auto");
+audioEl3.volume = 0.8;
 audioElements.push(audioEl3);
 
 var source1 = document.createElement('source');
@@ -40,11 +43,11 @@ audioElements.forEach(function(el, ind) {
     pauseOthers();
   });
 
-  el.addEventListener('error', function() {
+  el.addEventListener('error', function(e) {
     chrome.runtime.sendMessage({action: 'error'});
     playing = false;
     loading = false;
-    console.log('error')
+    console.log('Audio error code: ' + e.target.error.code);
   });
 
   el.addEventListener('abort', function() {
@@ -78,7 +81,12 @@ chrome.extension.onMessage.addListener(
       pauseAll();
       sendResponse({status: 'paused'});
     } else if(request.action === 'status') {
-      sendResponse({status: 'status', playing: playing, loading: loading, channelInd: currentInd});
+      sendResponse({
+        playing: playing,
+        loading: loading,
+        channelInd: currentInd,
+        volume: audioElements[currentInd].volume
+      });
     } else if(request.action === 'shift') {
       currentInd = (currentInd + 1) % audioElements.length;
       if(playing) {
@@ -86,10 +94,13 @@ chrome.extension.onMessage.addListener(
         audioElements[currentInd].load();
         audioElements[currentInd].play();
       }
+    } else if(request.action === 'set_volume') {
+      audioElements.forEach(function(el) {
+        el.volume = request.volume;
+      });
     } else if(request.action === 'play_started' && request.source === 'injected') {
       currentInd = request.channelInd;
       console.log('got the message, ind: ' + request.channelInd);
     }
   }
 );
-

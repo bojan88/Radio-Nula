@@ -13,6 +13,7 @@ var FloatingActionButton = mui.FloatingActionButton;
 var FontIcon = mui.FontIcon;
 var CircularProgress = mui.CircularProgress;
 var Snackbar = mui.Snackbar;
+var Slider = mui.Slider;
 
 const cardStyle = {
   marginTop: '20px',
@@ -59,6 +60,15 @@ const shiftImgStyle = {
   margin: '-17px 0 0 -17px'
 };
 
+const volumeWrapperStyle = {
+  margin: '10px 75px',
+  width: '250px'
+};
+
+const volumeStyle = {
+  margin: '0'
+};
+
 const snackbarHideDuration = 1800;
 
 class NulaCard extends React.Component {
@@ -92,15 +102,14 @@ class NulaCard extends React.Component {
 
   componentWillMount() {
     chrome.runtime.sendMessage({action: 'status'}, (response) => {
-      if(response.status === 'status') {
-        this.setState({
-          playing: response.playing,
-          loading: response.loading,
-          channelInd: response.channelInd
-        });
-        ls('channelInd', response.channelInd);
-        this._updateNulaData();
-      }
+      this.setState({
+        playing: response.playing,
+        loading: response.loading,
+        channelInd: response.channelInd,
+        volume: response.volume
+      });
+      ls('channelInd', response.channelInd);
+      this._updateNulaData();
     });
   };
 
@@ -132,6 +141,9 @@ class NulaCard extends React.Component {
           });
           ls('channelInd', this.state.channelInd);
         } else if(request.action === 'error') {
+          this.setState({
+            loading: false
+          });
           this.refs.errSnackbar.show();
         }
       }.bind(this)
@@ -180,7 +192,17 @@ class NulaCard extends React.Component {
       }.bind(this), 0);
     }
     chrome.runtime.sendMessage({action: 'shift'});
-  }
+  };
+
+  _onVolumeChange(e, value) {
+    chrome.runtime.sendMessage({
+      action: 'set_volume',
+      volume: value
+    });
+    this.setState({
+      volume: value
+    });
+  };
 
   render() {
     var playPauseButton;
@@ -222,6 +244,9 @@ class NulaCard extends React.Component {
           <div>
             {shiftBtn}
             {playPauseButton}
+          </div>
+          <div style={volumeWrapperStyle} >
+            <Slider name="volume" max={1} min={0} step={0.01} onChange={this._onVolumeChange.bind(this)} style={volumeStyle} value={this.state.volume} />
           </div>
         </div>
         <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="errSnackbar" />
