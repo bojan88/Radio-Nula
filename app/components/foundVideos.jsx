@@ -49,12 +49,19 @@ class FoundVideos extends React.Component {
       channelId: ls('channelInd') || 0
     };
 
+    this.updateToken();
+  };
+
+  updateToken(callback) {
     chrome.identity.getAuthToken({ 'interactive': true }, (token) => {
       this.setState({
         oauthToken: token
       });
+      if(callback && typeof callback === 'function') {
+        callback();
+      }
     });
-  }
+  };
 
   componentDidMount() {
     superagent.get(rssUrls[this.state.channelId]).end((err, res) => {
@@ -143,7 +150,7 @@ class FoundVideos extends React.Component {
     return (
       <div>
         <div>
-          <PlayLists setPlaylist={this.setPlaylist.bind(this)} oauthToken={this.state.oauthToken} />
+          <PlayLists setPlaylist={this.setPlaylist.bind(this)} oauthToken={this.state.oauthToken} updateToken={this.updateToken.bind(this)} />
           <TextField onChange={this._handleTextFieldChange.bind(this)} value={this.state.song} style={songFieldStyle} />
         </div>
         <div style={videoListStyle}>

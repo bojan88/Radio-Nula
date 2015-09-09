@@ -30,15 +30,23 @@ class PlayLists extends React.Component {
       if(!token) {
         this.timeout = setTimeout(() => {
           getLists.bind(this)();
-        }.bind(this), 500);
+        }.bind(this), 100);
       } else {
         superagent.get(queryURL)
           .set('Authorization', 'Bearer ' + token)
           .end((err, res) => {
             if(err) {
-              console.log(err.message);
+              if(err.status === 401) {
+                chrome.identity.removeCachedAuthToken({token: token}, () => {
+                  this.props.updateToken(() => {
+                    getLists.bind(this)();
+                  }.bind(this));
+                }.bind(this));
+              }
+              console.log('Error getting YouTube playlists with status code ' + err.status);
               return;
             }
+
             clearTimeout(this.timeout);
             var resObj = JSON.parse(res.text);
             this.setState({
