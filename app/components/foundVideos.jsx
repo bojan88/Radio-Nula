@@ -7,7 +7,7 @@ import PlayLists from './playLists.jsx';
 import rssUrls from '../constants/rssUrls';
 import ls from 'local-storage';
 
-var youtubeKey = 'AIzaSyAgTbw2_LpZ6IguIzyRjuP21-Dr-DsOzOQ';
+var youtubeKey = 'AIzaSyBoPL6PrHHVuhYKHhYfFOTsYyEtlXR2mFg';
 var songCount = 3;
 
 var RaisedButton = mui.RaisedButton;
