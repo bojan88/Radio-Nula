@@ -39,7 +39,7 @@ class VideoList extends React.Component {
             >
               <ul style={ulStyle} className="youtube-list">
                 {this.props.videos && this.props.videos.map((result, ind) => {
-                  return <YoutubeVideo key={result.id.videoId} data={result} ind={ind} playlistId={this.props.playlistId} />;
+                  return <YoutubeVideo key={result.id.videoId} data={result} ind={ind} playlistId={this.props.playlistId} oauthToken={this.props.oauthToken} />;
                 })}
               </ul>
           </ScrollArea>

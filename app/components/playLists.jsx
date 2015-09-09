@@ -26,22 +26,28 @@ class PlayLists extends React.Component {
     //TODO: replace this with self invoked es6 function
     //return arguments.callee ?
     var getLists = function getLists() {
-      var token = ls('oauthToken');
-      superagent.get(queryURL)
-        .set('Authorization', 'Bearer ' + token)
-        .end((err, res) => {
-          if(err) {
-            this.timeout = setTimeout(() => {
-              getLists.bind(this)();
-            }.bind(this), 500);
-          }
-          var resObj = JSON.parse(res.text);
-          this.setState({
-            playlists: resObj.items
-          });
-          var listInd = this.state.selectedListInd || 0;
-          this.props.setPlaylist(this.state.playlists[listInd].id);
-        }.bind(this));
+      var token = this.props.oauthToken;
+      if(!token) {
+        this.timeout = setTimeout(() => {
+          getLists.bind(this)();
+        }.bind(this), 500);
+      } else {
+        superagent.get(queryURL)
+          .set('Authorization', 'Bearer ' + token)
+          .end((err, res) => {
+            if(err) {
+              console.log(err.message);
+              return;
+            }
+            clearTimeout(this.timeout);
+            var resObj = JSON.parse(res.text);
+            this.setState({
+              playlists: resObj.items
+            });
+            var listInd = this.state.selectedListInd || 0;
+            this.props.setPlaylist(this.state.playlists[listInd].id);
+          }.bind(this));
+      }
     }.bind(this)()
   };
 

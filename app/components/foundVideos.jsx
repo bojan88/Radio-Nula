@@ -48,6 +48,12 @@ class FoundVideos extends React.Component {
       loading: true,
       channelId: ls('channelInd') || 0
     };
+
+    chrome.identity.getAuthToken({ 'interactive': true }, (token) => {
+      this.setState({
+        oauthToken: token
+      });
+    });
   }
 
   componentDidMount() {
@@ -137,7 +143,7 @@ class FoundVideos extends React.Component {
     return (
       <div>
         <div>
-          <PlayLists setPlaylist={this.setPlaylist.bind(this)} />
+          <PlayLists setPlaylist={this.setPlaylist.bind(this)} oauthToken={this.state.oauthToken} />
           <TextField onChange={this._handleTextFieldChange.bind(this)} value={this.state.song} style={songFieldStyle} />
         </div>
         <div style={videoListStyle}>
@@ -145,7 +151,8 @@ class FoundVideos extends React.Component {
             loading={this.state.loading}
             song={this.state.song}
             videos={this.state.videos}
-            playlistId={this.state.playlistId} />
+            playlistId={this.state.playlistId}
+            oauthToken={this.state.oauthToken} />
         </div>
         <div className="center-block">
           {this.state.nextPageToken ? <RaisedButton style={loadMoreBtn} label="Load More" onClick={this.loadMore.bind(this)} /> : null}

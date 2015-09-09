@@ -31,13 +31,17 @@ const snackbarHideDuration = 1800;
 
 class YoutubeVideo extends React.Component {
 
+  constructor(props) {
+    super(props);
+  };
+
   componentDidMount() {
     var iframe = React.findDOMNode(this.refs.ytIframe);
   };
 
   _addToPlaylist() {
     var playlistId = this.props.playlistId;
-    var token = ls('oauthToken');
+    var token = this.props.oauthToken;
     superagent.post('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet')
       .set('Authorization', 'Bearer ' + token)
       .send({

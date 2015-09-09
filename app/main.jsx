@@ -16,10 +16,6 @@ chrome.webRequest.onBeforeRequest.addListener((data) => {
   types: ["xmlhttprequest"]
 },['blocking']);
 
-chrome.identity.getAuthToken({ 'interactive': true }, (token) => {
-  ls('oauthToken', token);
-});
-
 React.render(
   <Home />,
   document.getElementById('tabs')
