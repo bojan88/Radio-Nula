@@ -16,14 +16,15 @@ var Snackbar = mui.Snackbar;
 var Slider = mui.Slider;
 
 const cardStyle = {
-  marginTop: '20px',
-  marginBottom: '20px'
+  marginTop: '10px',
 };
 
 const btnWrapperStyle = {
   textAlign: 'center',
-  paddingTop: '20px',
-  paddingBottom: '20px'
+  paddingTop: '10px',
+  paddingBottom: '10px',
+  userSelect: 'none',
+  WebkitUserSelect: 'none'
 };
 
 const shiftBtnStyle = {
@@ -32,7 +33,9 @@ const shiftBtnStyle = {
 
 const mediaWrapperStyle = {
   height: '400px',
-  backgroundColor: '#28282A'
+  backgroundColor: '#28282A',
+  userSelect: 'none',
+  WebkitUserSelect: 'none'
 };
 
 const mediaImgStyle = {
@@ -61,7 +64,7 @@ const shiftImgStyle = {
 };
 
 const volumeWrapperStyle = {
-  margin: '10px 75px',
+  margin: '10px 75px 0 75px',
   width: '250px'
 };
 

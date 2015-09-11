@@ -33,6 +33,7 @@ class YoutubeVideo extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {};
   };
 
   componentDidMount() {
@@ -42,6 +43,11 @@ class YoutubeVideo extends React.Component {
   _addToPlaylist() {
     var playlistId = this.props.playlistId;
     var token = this.props.oauthToken;
+
+    this.setState({
+      waitingForYoutube: true
+    });
+
     superagent.post('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet')
       .set('Authorization', 'Bearer ' + token)
       .send({
@@ -51,6 +57,10 @@ class YoutubeVideo extends React.Component {
         }
       })
       .end((err, res) => {
+        this.setState({
+          waitingForYoutube: false
+        });
+
         if(err) {
           this.refs.snackbarError.show();
         } else {
@@ -78,7 +88,7 @@ class YoutubeVideo extends React.Component {
           <div>
             <CardTitle subtitle={this.props.data.snippet.title}/>
             <div style={cardActionsStyle}>
-              <RaisedButton secondary={true} label="Add to playlist" onClick={this._addToPlaylist.bind(this)} />
+              <RaisedButton secondary={true} disabled={this.state.waitingForYoutube} label="Add to playlist" onClick={this._addToPlaylist.bind(this)} />
               <Snackbar message="Video added successfully." autoHideDuration={snackbarHideDuration} ref="snackbarSuccess" />
               <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="snackbarError" />
             </div>

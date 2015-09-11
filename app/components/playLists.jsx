@@ -6,9 +6,9 @@ import superagent from 'superagent';
 
 var DropDownMenu = mui.DropDownMenu;
 
-
 const playlistDropdownStyle = {
-  marginTop: '10px'
+  width: '100%',
+  textAlign: 'center'
 };
 
 class PlayLists extends React.Component {
@@ -83,6 +83,7 @@ class PlayLists extends React.Component {
           })}
           onChange={this._onDropdownChange.bind(this)}
           selectedIndex={this.state.selectedListInd}
+          autoWidth={false}
           style={playlistDropdownStyle} /> : null}
       </div>
     );
