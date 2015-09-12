@@ -18,7 +18,8 @@
 }
 
 .rotating {
-  -webkit-animation: rotating 2s linear infinite;
+  /*speed is for 33.33 rpm vinyl (standard)*/
+  -webkit-animation: rotating 1.8s linear infinite;
 }
 
 
