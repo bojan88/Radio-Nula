@@ -1,7 +1,6 @@
 var audioEl = document.getElementById('audio-main');
 
 audioEl.addEventListener('playing', function() {
-  debugger;
   var channel = audioEl.src.substring(audioEl.src.lastIndexOf('/') + 1, audioEl.src.length);
   var channelInd;
   switch(channel) {
