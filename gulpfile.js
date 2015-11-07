@@ -1,3 +1,5 @@
+"use strict";
+
 var gulp = require('gulp'),
     browserify = require('browserify'),
     babelify = require('babelify'),
@@ -21,7 +23,7 @@ gulp.task('setProduction', function() {
   production = true;
 });
 
-b.transform(babelify)
+b.transform(babelify);
 
 function bundle() {
   return b.bundle()

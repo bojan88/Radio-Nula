@@ -1,15 +1,14 @@
+"use strict";
+
 import React from 'react';
-import mui from 'material-ui';
+import {Tab, Tabs, Styles} from 'material-ui';
 
 import FoundVideos from './foundVideos.jsx';
 import NulaCard from './nulaCard.jsx';
 
 import injectTapEventPlugin from "react-tap-event-plugin";
 
-var ThemeManager = new mui.Styles.ThemeManager();
-
-var Tabs = mui.Tabs;
-var Tab = mui.Tab;
+var ThemeManager = new Styles.ThemeManager();
 
 class Home extends React.Component {
 
@@ -30,11 +29,11 @@ class Home extends React.Component {
     return {
       muiTheme: ThemeManager.getCurrentTheme()
     };
-  };
+  }
 
   componentWillMount() {
     injectTapEventPlugin();
-  };
+  }
 
   _onTabChange(value) {
     if(value === 1) {
@@ -46,7 +45,7 @@ class Home extends React.Component {
         renderSearch: false
       });
     }
-  };
+  }
 
   render() {
     var foundVideos = this.state.renderSearch ? <FoundVideos /> : null;

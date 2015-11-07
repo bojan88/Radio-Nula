@@ -1,10 +1,10 @@
+"use strict";
+
 import React from 'react';
-import mui from 'material-ui';
+import {DropDownMenu} from 'material-ui';
 import ls from 'local-storage';
 
 import superagent from 'superagent';
-
-var DropDownMenu = mui.DropDownMenu;
 
 const playlistDropdownStyle = {
   width: '100%',
@@ -56,12 +56,12 @@ class PlayLists extends React.Component {
             this.props.setPlaylist(this.state.playlists[listInd].id);
           }.bind(this));
       }
-    }.bind(this)()
-  };
+    }.bind(this)();
+  }
 
   componentWillUnmount() {
     clearTimeout(this.timeout);
-  };
+  }
 
   _onDropdownChange(e, ind) {
     this.props.setPlaylist(this.state.playlists[ind].id);
@@ -69,7 +69,7 @@ class PlayLists extends React.Component {
       selectedListInd: ind
     });
     ls('selectedListInd', ind);
-  };
+  }
 
   render() {
     return (

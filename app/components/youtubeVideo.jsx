@@ -1,14 +1,9 @@
+"use strict";
+
 import React from 'react';
-import mui from 'material-ui';
+import {Card, CardMedia, CardTitle, CardActions, RaisedButton, Snackbar} from 'material-ui';
 import superagent from 'superagent';
 import ls from 'local-storage';
-
-var Card = mui.Card;
-var CardMedia = mui.CardMedia;
-var CardTitle = mui.CardTitle;
-var CardActions = mui.CardActions;
-var RaisedButton = mui.RaisedButton;
-var Snackbar = mui.Snackbar;
 
 const cardStyle = {
   marginBottom: '10px',
@@ -34,11 +29,11 @@ class YoutubeVideo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-  };
+  }
 
   componentDidMount() {
     var iframe = React.findDOMNode(this.refs.ytIframe);
-  };
+  }
 
   _addToPlaylist() {
     var playlistId = this.props.playlistId;
@@ -67,7 +62,7 @@ class YoutubeVideo extends React.Component {
           this.refs.snackbarSuccess.show();
         }
       }.bind(this));
-  };
+  }
 
   render() {
     return (

@@ -1,19 +1,21 @@
+"use strict";
+
 import React from 'react';
-import mui from 'material-ui';
+import {
+  Card,
+  CardMedia,
+  CardTitle,
+  CardActions,
+  FloatingActionButton,
+  FontIcon,
+  CircularProgress,
+  Snackbar,
+  Slider
+} from 'material-ui';
 import superagent from 'superagent';
 import {parseString} from 'xml2js';
 import ls from 'local-storage';
 import rssUrls from '../constants/rssUrls';
-
-var Card = mui.Card;
-var CardMedia = mui.CardMedia;
-var CardTitle = mui.CardTitle;
-var CardActions = mui.CardActions;
-var FloatingActionButton = mui.FloatingActionButton;
-var FontIcon = mui.FontIcon;
-var CircularProgress = mui.CircularProgress;
-var Snackbar = mui.Snackbar;
-var Slider = mui.Slider;
 
 const cardStyle = {
   marginTop: '10px',
@@ -55,12 +57,12 @@ const imgLoadingStyle = {
 };
 
 const shiftImgStyle = {
-  width: '34px',
-  height: '34px',
+  width: '28px',
+  height: '28px',
   position: 'absolute',
   top: '50%',
   left: '50%',
-  margin: '-17px 0 0 -17px'
+  margin: '-14px 0 0 -14px'
 };
 
 const volumeWrapperStyle = {
@@ -83,7 +85,7 @@ class NulaCard extends React.Component {
       loading: false,
       channelInd: ls('channelInd') || 0
     };
-  };
+  }
 
   _updateNulaData() {
     superagent.get(rssUrls[this.state.channelInd]).end((err, res) => {
@@ -101,7 +103,7 @@ class NulaCard extends React.Component {
         });
       });
     });
-  };
+  }
 
   componentWillMount() {
     chrome.runtime.sendMessage({action: 'status'}, (response) => {
@@ -114,7 +116,7 @@ class NulaCard extends React.Component {
       ls('channelInd', response.channelInd);
       this._updateNulaData();
     });
-  };
+  }
 
   componentDidMount() {
     this.nulaHandler = setInterval(() => {
@@ -151,18 +153,18 @@ class NulaCard extends React.Component {
         }
       }.bind(this)
     );
-  };
+  }
 
   componentWillUnmount() {
     clearInterval(this.nulaHandler);
-  };
+  }
 
   _play() {
     chrome.runtime.sendMessage({action: 'play'});
     this.setState({
       loading: true
     });
-  };
+  }
 
   _pause() {
     chrome.runtime.sendMessage({action: 'pause'}, (response) => {
@@ -173,7 +175,7 @@ class NulaCard extends React.Component {
         });
       }
     });
-  };
+  }
 
   _shift() {
     if(this.state.playing) {
@@ -195,7 +197,7 @@ class NulaCard extends React.Component {
       }.bind(this), 0);
     }
     chrome.runtime.sendMessage({action: 'shift'});
-  };
+  }
 
   _onVolumeChange(e, value) {
     chrome.runtime.sendMessage({
@@ -205,18 +207,26 @@ class NulaCard extends React.Component {
     this.setState({
       volume: value
     });
-  };
+  }
 
   render() {
     var playPauseButton;
 
-    var shiftImgClass = this.state.loading ? 'rotating': null;
+    var shiftIcon;
+
+    if(this.state.loading) {
+      shiftIcon = (
+        <div>
+          <img src="images/skip_next_animation.gif" style={shiftImgStyle} />
+        </div>
+      );
+    } else {
+      shiftIcon = <FontIcon className="material-icons">skip_next</FontIcon>;
+    }
 
     var shiftBtn = (
       <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true} disabled={this.state.loading}>
-        <div>
-          <img src="images/ico_shift2x.png" style={shiftImgStyle} className={shiftImgClass} />
-        </div>
+        {shiftIcon}
       </FloatingActionButton>
     );
 

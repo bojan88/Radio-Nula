@@ -1,5 +1,7 @@
+"use strict";
+
 import React from 'react';
-import mui from 'material-ui';
+import {RaisedButton, TextField} from 'material-ui';
 import superagent from 'superagent';
 import {parseString} from 'xml2js';
 import VideoList from './videoList.jsx';
@@ -10,16 +12,13 @@ import ls from 'local-storage';
 var youtubeKey = 'AIzaSyBoPL6PrHHVuhYKHhYfFOTsYyEtlXR2mFg';
 var songCount = 3;
 
-var RaisedButton = mui.RaisedButton;
-var TextField = mui.TextField;
-
 const progressStyle = {
   display: 'table',
   marginLeft: 'auto',
   marginRight: 'auto',
   marginTop: '50px',
   marginBottom: '50px'
-}
+};
 
 const ulStyle = {
   padding: 0
@@ -38,7 +37,7 @@ const songFieldStyle = {
 
 const videoListStyle = {
   marginBottom: '20px'
-}
+};
 
 class FoundVideos extends React.Component {
 
@@ -50,7 +49,7 @@ class FoundVideos extends React.Component {
     };
 
     this.updateToken();
-  };
+  }
 
   updateToken(callback) {
     chrome.identity.getAuthToken({ 'interactive': true }, (token) => {
@@ -61,7 +60,7 @@ class FoundVideos extends React.Component {
         callback();
       }
     });
-  };
+  }
 
   componentDidMount() {
     superagent.get(rssUrls[this.state.channelId]).end((err, res) => {
@@ -73,7 +72,7 @@ class FoundVideos extends React.Component {
         this._searchYoutube();
       });
     });
-  };
+  }
 
   _searchYoutube() {
     this.setState({
@@ -97,11 +96,11 @@ class FoundVideos extends React.Component {
           this.setState({
             videos: this.state.videos.concat(resObj.items),
             nextPageToken: resObj.nextPageToken
-          })
+          });
         }.bind(this));
       }
     }.bind(this));
-  };
+  }
 
   loadMore(event) {
     if(!this.state.nextPageToken) {
@@ -122,9 +121,9 @@ class FoundVideos extends React.Component {
       this.setState({
         videos: this.state.videos.concat(resObj.items),
         nextPageToken: resObj.nextPageToken !== this.state.nextPageToken ? resObj.nextPageToken : null
-      })
+      });
     }.bind(this));
-  };
+  }
 
   _handleTextFieldChange(e) {
     this.setState({
@@ -138,13 +137,13 @@ class FoundVideos extends React.Component {
         this._searchYoutube();
       }
     }.bind(this), 500);
-  };
+  }
 
   setPlaylist(playlistId) {
     this.setState({
       playlistId: playlistId
     });
-  };
+  }
 
   render() {
     return (

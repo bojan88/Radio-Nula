@@ -1,9 +1,9 @@
+"use strict";
+
 import React from 'react';
-import mui from 'material-ui';
+import {CircularProgress} from 'material-ui';
 import YoutubeVideo from './youtubeVideo.jsx';
 import ScrollArea from 'react-scrollbar';
-
-var CircularProgress = mui.CircularProgress;
 
 const progressStyle = {
   display: 'table',
@@ -11,7 +11,7 @@ const progressStyle = {
   marginRight: 'auto',
   marginTop: '50px',
   marginBottom: '50px'
-}
+};
 
 const ulStyle = {
   padding: 0
@@ -21,7 +21,7 @@ class VideoList extends React.Component {
 
   constructor(props) {
     super(props);
-  };
+  }
 
   render() {
     var videosHtml;
