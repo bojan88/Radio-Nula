@@ -19,6 +19,10 @@ class Home extends Component {
   _onYoutubeTabActive() {
     this.setState({renderSearch: true});
   }
+  
+  _onNulaTabActive() {
+    this.setState({renderSearch: false});
+  }
 
   componentWillMount() {
   }
@@ -28,7 +32,7 @@ class Home extends Component {
     return (
       <MuiThemeProvider>
         <Tabs>
-          <Tab label="Nula Player" >
+          <Tab label="Nula Player" onActive={this._onNulaTabActive.bind(this)}>
             <NulaCard />
           </Tab>
           <Tab label="Youtube Search" onActive={this._onYoutubeTabActive.bind(this)}>
