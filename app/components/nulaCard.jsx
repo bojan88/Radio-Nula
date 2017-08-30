@@ -77,6 +77,7 @@ class NulaCard extends Component {
           errorSnackbarOpen: true
         });
         clearInterval(this.nulaHandler);
+        _gaq.push(['_trackEvent', 'Errors', 'new', 'Error reading playlist']);
         return;
       }
       var song = res.body.ch1.currentSong;
@@ -132,8 +133,10 @@ class NulaCard extends Component {
     this.setState({
       loading: true
     });
-  }
 
+    _gaq.push(['_trackEvent', 'UserActions', 'music', 'play']);
+  }
+  
   _pause() {
     chrome.runtime.sendMessage({action: 'pause'}, (response) => {
       if(response.status === 'paused') {
@@ -143,6 +146,8 @@ class NulaCard extends Component {
         });
       }
     });
+    
+    _gaq.push(['_trackEvent', 'UserActions', 'music', 'pause']);
   }
 
   _onVolumeChange(e, value) {

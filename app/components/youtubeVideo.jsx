@@ -64,10 +64,14 @@ class YoutubeVideo extends Component {
           this.setState({
             errorSnackbarOpen: true
           });
+
+          _gaq.push(['_trackEvent', 'Errors', 'new', 'Auth error']);
         } else {
           this.setState({
             videoAddedSnackbarOpen: true
           });
+
+          _gaq.push(['_trackEvent', 'UserActions', 'video_add', 'Added video to playlist']);
         }
       }.bind(this));
   }

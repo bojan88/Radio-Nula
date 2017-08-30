@@ -40,5 +40,5 @@
     "48": "images/nula_ico48.png",
     "128": "images/nula_ico128.png"
   },
-  "content_security_policy": "script-src 'self' https://apis.google.com https://www.youtube.com https://s.ytimg.com; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://apis.google.com https://www.youtube.com https://s.ytimg.com https://ssl.google-analytics.com; object-src 'self'"
 }

@@ -42,6 +42,8 @@ class PlayLists extends Component {
                     getLists.bind(this)();
                   }.bind(this));
                 }.bind(this));
+
+                _gaq.push(['_trackEvent', 'Errors', 'new', 'Auth error']);
               }
               console.log('Error getting YouTube playlists with status code ' + err.status);
               return;
