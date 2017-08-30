@@ -29,7 +29,10 @@ class YoutubeVideo extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      videoAddedSnackbarOpen: false,
+      errorSnackbarOpen: false
+    };
   }
 
   componentDidMount() {
@@ -58,11 +61,27 @@ class YoutubeVideo extends Component {
         });
 
         if(err) {
-          this.refs.snackbarError.show();
+          this.setState({
+            errorSnackbarOpen: true
+          });
         } else {
-          this.refs.snackbarSuccess.show();
+          this.setState({
+            videoAddedSnackbarOpen: true
+          });
         }
       }.bind(this));
+  }
+
+  _handleVideoAddedSnackbarClose() {
+    this.setState({
+      videoAddedSnackbarOpen: false
+    });
+  }
+
+  _handleErrorSnackbarClose() {
+    this.setState({
+      errorSnackbarOpen: false
+    });
   }
 
   render() {
@@ -84,8 +103,8 @@ class YoutubeVideo extends Component {
             <CardTitle subtitle={this.props.data.snippet.title}/>
             <div style={cardActionsStyle}>
               <RaisedButton secondary={true} disabled={this.state.waitingForYoutube} label="Add to playlist" onClick={this._addToPlaylist.bind(this)} />
-              <Snackbar open={false} message="Video added successfully." autoHideDuration={snackbarHideDuration} ref="snackbarSuccess" />
-              <Snackbar open={false} message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="snackbarError" />
+              <Snackbar open={this.state.videoAddedSnackbarOpen} onRequestClose={this._handleVideoAddedSnackbarClose.bind(this)} message="Video added successfully." autoHideDuration={snackbarHideDuration} />
+              <Snackbar open={this.state.errorSnackbarOpen} onRequestClose={this._handleVideoAddedSnackbarClose.bind(this)} message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} />
             </div>
           </div>
         </CardActions>

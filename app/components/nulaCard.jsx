@@ -66,13 +66,16 @@ class NulaCard extends Component {
     this.state = {
       playing: false,
       loading: false,
+      errorSnackbarOpen: false
     };
   }
 
   _updateNulaData() {
     superagent.get('http://socket.radionula.com/playlist').end((err, res) => {
       if(err) {
-        this.refs.errSnackbar.show();
+        this.setState({
+          errorSnackbarOpen: true
+        });
         clearInterval(this.nulaHandler);
         return;
       }
@@ -152,6 +155,12 @@ class NulaCard extends Component {
     });
   }
 
+  _handleSnackbarClose() {
+    this.setState({
+      errorSnackbarOpen: false
+    })
+  }
+
   render() {
     var playPauseButton;
 
@@ -188,7 +197,7 @@ class NulaCard extends Component {
             <Slider name="volume" max={1} min={0} step={0.01} onChange={this._onVolumeChange.bind(this)} style={volumeStyle} value={this.state.volume} />
           </div>
         </div>
-        <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} open={false} ref="errSnackbar" />
+        <Snackbar message="There was an error reading the playlist. Please try again." autoHideDuration={snackbarHideDuration} open={this.state.errorSnackbarOpen} onRequestClose={this._handleSnackbarClose.bind(this)} />
       </Card>
     );
   };
