@@ -79,9 +79,9 @@ class PlayLists extends Component {
           onChange={this._onDropdownChange.bind(this)}
           autoWidth={false}
           style={playlistDropdownStyle}
-          value={null}>
+          value={this.state.selectedListInd}>
           {this.state.playlists && this.state.playlists.map((list, ind) => {
-            return <MenuItem value={list.id} key={ind} primaryText={list.snippet.title} />;
+            return <MenuItem value={ind} key={ind} primaryText={list.snippet.title} />;
           })}
         </DropDownMenu>
       </div>
