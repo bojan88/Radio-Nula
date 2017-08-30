@@ -1,6 +1,6 @@
 "use strict";
 
-import React from 'react';
+import React, {Component} from 'react';
 import {
   Card,
   CardMedia,
@@ -13,9 +13,7 @@ import {
   Slider
 } from 'material-ui';
 import superagent from 'superagent';
-import {parseString} from 'xml2js';
 import ls from 'local-storage';
-import rssUrls from '../constants/rssUrls';
 
 const cardStyle = {
   marginTop: '10px',
@@ -27,10 +25,6 @@ const btnWrapperStyle = {
   paddingBottom: '10px',
   userSelect: 'none',
   WebkitUserSelect: 'none'
-};
-
-const shiftBtnStyle = {
-  marginRight: '20px'
 };
 
 const mediaWrapperStyle = {
@@ -56,15 +50,6 @@ const imgLoadingStyle = {
   top: '-25px'
 };
 
-const shiftImgStyle = {
-  width: '28px',
-  height: '28px',
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  margin: '-14px 0 0 -14px'
-};
-
 const volumeWrapperStyle = {
   margin: '10px 75px 0 75px',
   width: '250px'
@@ -76,31 +61,27 @@ const volumeStyle = {
 
 const snackbarHideDuration = 1800;
 
-class NulaCard extends React.Component {
+class NulaCard extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       playing: false,
       loading: false,
-      channelInd: ls('channelInd') || 0
     };
   }
 
   _updateNulaData() {
-    superagent.get(rssUrls[this.state.channelInd]).end((err, res) => {
+    superagent.get('http://socket.radionula.com/playlist').end((err, res) => {
       if(err) {
         this.refs.errSnackbar.show();
         clearInterval(this.nulaHandler);
         return;
       }
-      parseString(res.text, (err, res) => {
-        var song = res.rss.channel[0].item[0].title[0];
-        var image = res.rss.channel[0].item[0].image[0].url[0];
-        this.setState({
-          song: song,
-          image: image
-        });
+      var song = res.body.ch1.currentSong;
+      this.setState({
+        song: `${song.artist} - ${song.title}`,
+        image: song.cover
       });
     });
   }
@@ -110,17 +91,14 @@ class NulaCard extends React.Component {
       this.setState({
         playing: response.playing,
         loading: response.loading,
-        channelInd: response.channelInd,
         volume: response.volume
       });
-      ls('channelInd', response.channelInd);
       this._updateNulaData();
     });
   }
 
   componentDidMount() {
     this.nulaHandler = setInterval(() => {
-      //disable if the channel is changing
       if(!this.state.loading) {
         this._updateNulaData();
       }
@@ -130,21 +108,10 @@ class NulaCard extends React.Component {
     chrome.extension.onMessage.addListener(
       (request, sender, sendResponse) => {
         if (request.action === 'play_started') {
-          if(request.channelInd !== this.state.channelInd) {
-            this.setState({
-              image: null,
-              song: null
-            });
-            setTimeout(() => {
-              this._updateNulaData();
-            }.bind(this), 0);
-          }
           this.setState({
             playing: true,
             loading: false,
-            channelInd: request.channelInd
           });
-          ls('channelInd', this.state.channelInd);
         } else if(request.action === 'error') {
           this.setState({
             loading: false
@@ -177,28 +144,6 @@ class NulaCard extends React.Component {
     });
   }
 
-  _shift() {
-    if(this.state.playing) {
-      this.setState({
-        loading: true
-      });
-    } else {
-      var newChannelInd = (this.state.channelInd + 1) % 3;
-      this.setState({
-        channelInd: newChannelInd
-      });
-      ls('channelInd', newChannelInd);
-      this.setState({
-        image: null,
-        song: null
-      });
-      setTimeout(() => {
-        this._updateNulaData();
-      }.bind(this), 0);
-    }
-    chrome.runtime.sendMessage({action: 'shift'});
-  }
-
   _onVolumeChange(e, value) {
     chrome.runtime.sendMessage({
       action: 'set_volume',
@@ -211,24 +156,6 @@ class NulaCard extends React.Component {
 
   render() {
     var playPauseButton;
-
-    var shiftIcon;
-
-    if(this.state.loading) {
-      shiftIcon = (
-        <div>
-          <img src="images/skip_next_animation.gif" style={shiftImgStyle} />
-        </div>
-      );
-    } else {
-      shiftIcon = <FontIcon className="material-icons">skip_next</FontIcon>;
-    }
-
-    var shiftBtn = (
-      <FloatingActionButton style={shiftBtnStyle} onClick={this._shift.bind(this)} label="Shift" secondary={true} disabled={this.state.loading}>
-        {shiftIcon}
-      </FloatingActionButton>
-    );
 
     if(this.state.playing || this.state.loading) {
       playPauseButton = (
@@ -248,21 +175,20 @@ class NulaCard extends React.Component {
 
     return (
       <Card style={cardStyle}>
-        <CardMedia overlay={<CardTitle title={this.state.song} subtitle={"Channel " + (this.state.channelInd + 1)} />}>
+        <CardMedia overlay={<CardTitle title={this.state.song} />}>
           <div style={mediaWrapperStyle}>
             {this.state.image ? <img src={this.state.image} style={mediaImgStyle} className={vinylClass} /> : <CircularProgress style={imgLoadingStyle} mode="indeterminate" size={0.8} />}
           </div>
         </CardMedia>
         <div style={btnWrapperStyle}>
           <div>
-            {shiftBtn}
             {playPauseButton}
           </div>
           <div style={volumeWrapperStyle} >
             <Slider name="volume" max={1} min={0} step={0.01} onChange={this._onVolumeChange.bind(this)} style={volumeStyle} value={this.state.volume} />
           </div>
         </div>
-        <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="errSnackbar" />
+        <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} open={false} ref="errSnackbar" />
       </Card>
     );
   };

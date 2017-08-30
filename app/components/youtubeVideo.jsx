@@ -1,6 +1,7 @@
 "use strict";
 
-import React from 'react';
+import React, {Component, findDOMNode} from 'react';
+import ReactDOM from 'react-dom';
 import {Card, CardMedia, CardTitle, CardActions, RaisedButton, Snackbar} from 'material-ui';
 import superagent from 'superagent';
 import ls from 'local-storage';
@@ -24,7 +25,7 @@ const cardActionsStyle = {
 const snackbarHideDuration = 1800;
 
 
-class YoutubeVideo extends React.Component {
+class YoutubeVideo extends Component {
 
   constructor(props) {
     super(props);
@@ -32,7 +33,7 @@ class YoutubeVideo extends React.Component {
   }
 
   componentDidMount() {
-    var iframe = React.findDOMNode(this.refs.ytIframe);
+    var iframe = ReactDOM.findDOMNode(this.refs.ytIframe);
   }
 
   _addToPlaylist() {
@@ -75,7 +76,6 @@ class YoutubeVideo extends React.Component {
               width={opts.width}
               height={opts.height}
               frameBorder="0"
-              showinfo="0"
               allowFullScreen></iframe>
           </div>
         </CardMedia>
@@ -84,8 +84,8 @@ class YoutubeVideo extends React.Component {
             <CardTitle subtitle={this.props.data.snippet.title}/>
             <div style={cardActionsStyle}>
               <RaisedButton secondary={true} disabled={this.state.waitingForYoutube} label="Add to playlist" onClick={this._addToPlaylist.bind(this)} />
-              <Snackbar message="Video added successfully." autoHideDuration={snackbarHideDuration} ref="snackbarSuccess" />
-              <Snackbar message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="snackbarError" />
+              <Snackbar open={false} message="Video added successfully." autoHideDuration={snackbarHideDuration} ref="snackbarSuccess" />
+              <Snackbar open={false} message="There was an error. Please try again." autoHideDuration={snackbarHideDuration} ref="snackbarError" />
             </div>
           </div>
         </CardActions>

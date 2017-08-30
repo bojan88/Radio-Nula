@@ -1,7 +1,7 @@
 "use strict";
 
-import React from 'react';
-import {DropDownMenu} from 'material-ui';
+import React, {Component} from 'react';
+import {DropDownMenu, MenuItem} from 'material-ui';
 import ls from 'local-storage';
 
 import superagent from 'superagent';
@@ -11,7 +11,7 @@ const playlistDropdownStyle = {
   textAlign: 'center'
 };
 
-class PlayLists extends React.Component {
+class PlayLists extends Component {
 
   constructor(props) {
     super(props);
@@ -48,9 +48,8 @@ class PlayLists extends React.Component {
             }
 
             clearTimeout(this.timeout);
-            var resObj = JSON.parse(res.text);
             this.setState({
-              playlists: resObj.items
+              playlists: res.body.items
             });
             var listInd = this.state.selectedListInd || 0;
             this.props.setPlaylist(this.state.playlists[listInd].id);
@@ -71,20 +70,20 @@ class PlayLists extends React.Component {
     ls('selectedListInd', ind);
   }
 
+
+
   render() {
     return (
       <div>
-        {this.state.playlists ? <DropDownMenu
-          menuItems={this.state.playlists.map((list) => {
-            return {
-              payload: list.id,
-              text: list.snippet.title
-            }
-          })}
+        <DropDownMenu
           onChange={this._onDropdownChange.bind(this)}
-          selectedIndex={this.state.selectedListInd}
           autoWidth={false}
-          style={playlistDropdownStyle} /> : null}
+          style={playlistDropdownStyle}
+          value={null}>
+          {this.state.playlists && this.state.playlists.map((list, ind) => {
+            return <MenuItem value={list.id} key={ind} primaryText={list.snippet.title} />;
+          })}
+        </DropDownMenu>
       </div>
     );
   };

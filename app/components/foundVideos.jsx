@@ -1,12 +1,10 @@
 "use strict";
 
-import React from 'react';
+import React, {Component} from 'react';
 import {RaisedButton, TextField} from 'material-ui';
 import superagent from 'superagent';
-import {parseString} from 'xml2js';
 import VideoList from './videoList.jsx';
 import PlayLists from './playLists.jsx';
-import rssUrls from '../constants/rssUrls';
 import ls from 'local-storage';
 
 var youtubeKey = 'AIzaSyBoPL6PrHHVuhYKHhYfFOTsYyEtlXR2mFg';
@@ -39,13 +37,12 @@ const videoListStyle = {
   marginBottom: '20px'
 };
 
-class FoundVideos extends React.Component {
+class FoundVideos extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
-      channelId: ls('channelInd') || 0
     };
 
     this.updateToken();
@@ -63,14 +60,12 @@ class FoundVideos extends React.Component {
   }
 
   componentDidMount() {
-    superagent.get(rssUrls[this.state.channelId]).end((err, res) => {
-      parseString(res.text, (err, res) => {
-        var song = res.rss.channel[0].item[0].title[0];
-        this.setState({
-          song: song
-        });
-        this._searchYoutube();
+    superagent.get('http://socket.radionula.com/playlist').end((err, res) => {
+      var song = res.body.ch1.currentSong;
+      this.setState({
+        song: `${song.artist} - ${song.title}`
       });
+      this._searchYoutube();
     });
   }
 
@@ -150,7 +145,7 @@ class FoundVideos extends React.Component {
       <div>
         <div>
           <PlayLists setPlaylist={this.setPlaylist.bind(this)} oauthToken={this.state.oauthToken} updateToken={this.updateToken.bind(this)} />
-          <TextField onChange={this._handleTextFieldChange.bind(this)} value={this.state.song} style={songFieldStyle} />
+          <TextField id="songNameInput" onChange={this._handleTextFieldChange.bind(this)} value={this.state.song} style={songFieldStyle} />
         </div>
         <div style={videoListStyle}>
           <VideoList

@@ -1,16 +1,13 @@
 "use strict";
 
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Tab, Tabs, Styles} from 'material-ui';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import FoundVideos from './foundVideos.jsx';
 import NulaCard from './nulaCard.jsx';
 
-import injectTapEventPlugin from "react-tap-event-plugin";
-
-var ThemeManager = new Styles.ThemeManager();
-
-class Home extends React.Component {
+class Home extends Component {
 
   constructor(props) {
     super(props);
@@ -19,45 +16,26 @@ class Home extends React.Component {
     };
   }
 
-  static get childContextTypes() {
-    return {
-      muiTheme: React.PropTypes.object
-    };
-  }
-
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
+  _onYoutubeTabActive() {
+    this.setState({renderSearch: true});
   }
 
   componentWillMount() {
-    injectTapEventPlugin();
-  }
-
-  _onTabChange(value) {
-    if(value === 1) {
-      this.setState({
-        renderSearch: true
-      });
-    } else {
-      this.setState({
-        renderSearch: false
-      });
-    }
   }
 
   render() {
     var foundVideos = this.state.renderSearch ? <FoundVideos /> : null;
     return (
-      <Tabs onChange={this._onTabChange.bind(this)}>
-        <Tab label="Nula Player" >
-          <NulaCard />
-        </Tab>
-        <Tab label="Youtube Search" >
-          {foundVideos}
-        </Tab>
-      </Tabs>
+      <MuiThemeProvider>
+        <Tabs>
+          <Tab label="Nula Player" >
+            <NulaCard />
+          </Tab>
+          <Tab label="Youtube Search" onActive={this._onYoutubeTabActive.bind(this)}>
+            {foundVideos}
+          </Tab>
+        </Tabs>
+      </MuiThemeProvider>
     );
   };
 

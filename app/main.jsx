@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {Component} from 'react';
+import {render} from 'react-dom';
 import Home from './components/home.jsx';
 import ls from 'local-storage';
 
@@ -16,7 +17,7 @@ chrome.webRequest.onBeforeRequest.addListener((data) => {
   types: ["xmlhttprequest"]
 },['blocking']);
 
-React.render(
+render(
   <Home />,
   document.getElementById('tabs')
 );

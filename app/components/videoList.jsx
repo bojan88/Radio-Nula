@@ -1,6 +1,6 @@
 "use strict";
 
-import React from 'react';
+import React, {Component} from 'react';
 import {CircularProgress} from 'material-ui';
 import YoutubeVideo from './youtubeVideo.jsx';
 import ScrollArea from 'react-scrollbar';
@@ -17,7 +17,7 @@ const ulStyle = {
   padding: 0
 };
 
-class VideoList extends React.Component {
+class VideoList extends Component {
 
   constructor(props) {
     super(props);
