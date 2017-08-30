@@ -42,12 +42,10 @@ const mediaImgStyle = {
 };
 
 const imgLoadingStyle = {
-  marginTop: '175px',
-  marginBottom: '175px',
-  marginLeft: '50%',
-  position: 'relative',
-  left: '-25px',
-  top: '-25px'
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)'
 };
 
 const volumeWrapperStyle = {
@@ -177,7 +175,9 @@ class NulaCard extends Component {
       <Card style={cardStyle}>
         <CardMedia overlay={<CardTitle title={this.state.song} />}>
           <div style={mediaWrapperStyle}>
-            {this.state.image ? <img src={this.state.image} style={mediaImgStyle} className={vinylClass} /> : <CircularProgress style={imgLoadingStyle} mode="indeterminate" size={0.8} />}
+            {this.state.image && !this.state.loading ?
+              <img src={this.state.image} style={mediaImgStyle} className={vinylClass} /> :
+              <CircularProgress style={imgLoadingStyle} mode="indeterminate" size={120} />}
           </div>
         </CardMedia>
         <div style={btnWrapperStyle}>
